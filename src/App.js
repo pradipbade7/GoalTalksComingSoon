@@ -105,6 +105,32 @@ const ComingSoon = () => {
     setIsSubmitting(true);
   
     try {
+      // Check if the email already exists in the WaitList
+      const { data: existingEmail, error: checkError } = await supabase
+        .from('WaitList')
+        .select('Email')
+        .eq('Email', email);
+  
+      if (checkError) {
+        console.error('Error checking email:', checkError);
+        setSnackbar({
+          open: true,
+          message: 'Failed to check email. Please try again.',
+          severity: 'error',
+        });
+        return;
+      }
+  
+      if (existingEmail.length > 0) {
+        setSnackbar({
+          open: true,
+          message: 'This email is already on the waitlist.',
+          severity: 'warning',
+        });
+        return;
+      }
+  
+      // Proceed with inserting the email if it's not a duplicate
       const { data, error } = await supabase.from('WaitList').insert([{ Email: email }]);
   
       if (error) {
@@ -133,6 +159,8 @@ const ComingSoon = () => {
       setIsSubmitting(false); // Reset submitting state
     }
   };
+  
+  
   
 
   const scrollToTop = () => {
