@@ -131,7 +131,7 @@ const ComingSoon = () => {
       }
   
       // Proceed with inserting the email if it's not a duplicate
-      const { data, error } = await supabase.from('WaitList').insert([{ Email: email }]);
+      const { error } = await supabase.from('WaitList').insert([{ Email: email }]);
   
       if (error) {
         console.error('Error saving email:', error);
