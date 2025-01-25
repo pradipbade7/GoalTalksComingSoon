@@ -92,8 +92,8 @@ const ComingSoon = () => {
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    const emailnormalised = email.trim().toLowerCase();
+    if (!emailnormalised || !/\S+@\S+\.\S+/.test(emailnormalised)) {
       setSnackbar({
         open: true,
         message: 'Please enter a valid email address',
@@ -109,7 +109,7 @@ const ComingSoon = () => {
       const { data: existingEmail, error: checkError } = await supabase
         .from('WaitList')
         .select('Email')
-        .eq('Email', email);
+        .eq('Email', emailnormalised);
   
       if (checkError) {
         console.error('Error checking email:', checkError);
@@ -131,7 +131,7 @@ const ComingSoon = () => {
       }
   
       // Proceed with inserting the email if it's not a duplicate
-      const { error } = await supabase.from('WaitList').insert([{ Email: email }]);
+      const { error } = await supabase.from('WaitList').insert([{ Email: emailnormalised }]);
   
       if (error) {
         console.error('Error saving email:', error);
